@@ -5,7 +5,7 @@ const allConfigs = {
     apiUrl: "http://localhost:8000",
   },
   production: {
-    apiUrl: "https://api.storygen.ai",
+    apiUrl: "https://api.prateeklab.com",
   },
 };
 
