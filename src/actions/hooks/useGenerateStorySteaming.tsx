@@ -41,7 +41,6 @@ const useGenerateStorySteaming = () => {
 
       const chunk = decoder.decode(value, { stream: true });
       for (const line of chunk.split("\n")) {
-        console.log(line);
         if (!line) continue;
         try {
           const data = JSON.parse(line.slice(6));

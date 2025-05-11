@@ -22,7 +22,7 @@ export function Navbar() {
       });
     };
     window.addEventListener("scroll", handleScroll, { passive: true });
-    handleScroll(); // Initial check
+    handleScroll();
     return () => window.removeEventListener("scroll", handleScroll);
   }, []);
 
@@ -46,9 +46,6 @@ export function Navbar() {
           TaleTalk
         </span>
       </div>
-      <button className="px-3 sm:px-5 py-1.5 sm:py-2 text-sm sm:text-base rounded-lg bg-gradient-to-r from-purple-500 to-pink-500 text-white font-medium shadow hover:from-purple-600 hover:to-pink-600 transition-all">
-        Get Started
-      </button>
     </nav>
   );
 }
