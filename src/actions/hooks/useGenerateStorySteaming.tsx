@@ -11,8 +11,14 @@ const useGenerateStorySteaming = () => {
     "not_started" | "streaming" | "completed" | "error"
   >("not_started");
 
+  const reset = () => {
+    setData(null);
+    setStreamingStatus("not_started");
+  };
+
   const generateStory = async (data: StoryFormData) => {
     setStreamingStatus("not_started");
+    setData(null);
     const response = await fetch(`${config.apiUrl}/www/story/sse`, {
       method: "POST",
       headers: {
@@ -34,23 +40,28 @@ const useGenerateStorySteaming = () => {
       setStreamingStatus("streaming");
 
       const chunk = decoder.decode(value, { stream: true });
-      try {
-        const data = JSON.parse(chunk.slice(6));
-        if (data.event === "story_text_append") {
-          setData((prev) => ({
-            ...(prev || { story: "", audio_url: "" }),
-            story: (prev?.story || "") + data.text,
-          }));
-        } else if (data.event === "audio_url") {
-          setData((prev) => ({
-            ...(prev || { story: "", audio_url: "" }),
-            audio_url: data.text,
-          }));
+      for (const line of chunk.split("\n")) {
+        console.log(line);
+        if (!line) continue;
+        try {
+          const data = JSON.parse(line.slice(6));
+          if (data.event === "story_text_append") {
+            setData((prev) => ({
+              ...(prev || { story: "", audio_url: "" }),
+              story: (prev?.story || "") + data.text,
+            }));
+          } else if (data.event === "audio_url") {
+            setData((prev) => ({
+              ...(prev || { story: "", audio_url: "" }),
+              audio_url: data.text,
+            }));
+          }
+        } catch (e) {
+          console.error("Error parsing chunk:", e);
+          console.error("chunk:", chunk);
+          setStreamingStatus("error");
+          throw e;
         }
-      } catch (e) {
-        console.error("Error parsing chunk:", e);
-        setStreamingStatus("error");
-        throw e;
       }
     }
     setStreamingStatus("completed");
@@ -61,7 +72,7 @@ const useGenerateStorySteaming = () => {
     mutationFn: generateStory,
   });
 
-  return { ...mutation, data, streamingStatus };
+  return { ...mutation, data, streamingStatus, reset };
 };
 
 export default useGenerateStorySteaming;

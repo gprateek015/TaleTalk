@@ -12,7 +12,7 @@ import {
   SelectValue,
 } from "@/components/ui/select";
 import { Button } from "@/components/ui/button";
-import { Shuffle, Hourglass } from "lucide-react";
+import { Shuffle, Hourglass, RotateCcw } from "lucide-react";
 import { storyFormSchema, type StoryFormData } from "./schema";
 import {
   GENRES,
@@ -33,6 +33,7 @@ export function StoryForm() {
     isPending: isGeneratingStory,
     data: storyData,
     streamingStatus,
+    reset: resetStreamingData,
   } = useGenerateStorySteaming();
 
   const {
@@ -57,8 +58,7 @@ export function StoryForm() {
   const onSubmit = async (data: StoryFormData) => {
     try {
       await generateStoryAsync(data);
-    } catch (error) {
-      console.log("error", error);
+    } catch (_) {
       toast.error("Error generating story");
     }
   };
@@ -72,6 +72,11 @@ export function StoryForm() {
       language: getRandom(LANGUAGES).value,
       storyIdea: getRandom(STORY_IDEAS),
     });
+  };
+
+  const handleReset = () => {
+    resetStreamingData();
+    reset({});
   };
 
   const step = ["not_started", "error"].includes(streamingStatus) ? 0 : 1;
@@ -91,6 +96,17 @@ export function StoryForm() {
           >
             <Shuffle className="w-3.5 h-3.5 sm:w-4 sm:h-4" />
             Random Generate
+          </Button>
+        )}
+        {step === 1 && (
+          <Button
+            type="button"
+            variant="ghost"
+            onClick={handleReset}
+            className="flex items-center gap-2 px-3 sm:px-4 py-1.5 sm:py-2 text-sm cursor-pointer"
+          >
+            <RotateCcw className="w-3.5 h-3.5 sm:w-4 sm:h-4" />
+            Reset
           </Button>
         )}
       </div>

@@ -43,7 +43,7 @@ export const LANGUAGES: {
   value: NonNullable<StoryFormData["language"]>;
 }[] = [
   { label: "English", value: "english" },
-  { label: "Hindi", value: "hindi" },
+  // { label: "Hindi", value: "hindi" },
 ];
 export const THEMES = [
   { label: "Redemption", value: "redemption" },
