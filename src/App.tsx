@@ -5,6 +5,7 @@ import { Navbar } from "./components/Navbar";
 import "./App.css";
 import { QueryClient, QueryClientProvider } from "@tanstack/react-query";
 import { Toaster } from "@/components/ui/sonner";
+import AudioCall from "./components/AudioCall";
 
 const queryClient = new QueryClient();
 
@@ -26,6 +27,10 @@ const App = () => {
           className="min-h-[100dvh] text-white relative flex items-center justify-center"
         >
           <StoryForm />
+        </section>
+
+        <section className="min-h-[100dvh] text-white relative flex items-center justify-center">
+          <AudioCall />
         </section>
       </div>
       <Toaster />
