@@ -5,8 +5,8 @@ import config from "@/config";
 
 const AudioCall = () => {
   const [isCalling, setIsCalling] = useState(false);
-  const localAudioRef = useRef(null);
-  const remoteAudioRef = useRef(null);
+  const localAudioRef = useRef<HTMLMediaElement | null>(null);
+  const remoteAudioRef = useRef<HTMLMediaElement | null>(null);
   const pc = useRef(
     new RTCPeerConnection({
       iceServers: [{ urls: "stun:stun.l.google.com:19302" }],
@@ -24,10 +24,9 @@ const AudioCall = () => {
         autoGainControl: true,
       },
     });
-    localAudioRef.current.srcObject = stream;
-
-    console.log("Audio stream:", stream);
-    console.log("Audio tracks:", stream.getAudioTracks());
+    if (localAudioRef.current) {
+      localAudioRef.current.srcObject = stream;
+    }
 
     stream.getTracks().forEach((track) => {
       console.log("track", track);
@@ -54,7 +53,7 @@ const AudioCall = () => {
 
   pc.current.ontrack = (event) => {
     console.log("ontrack", event);
-    if (event.track.kind === "audio") {
+    if (event.track.kind === "audio" && remoteAudioRef.current) {
       remoteAudioRef.current.srcObject = event.streams[0];
     }
   };
